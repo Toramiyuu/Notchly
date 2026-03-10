@@ -37,6 +37,7 @@ struct NookPanelView: View {
             }
             .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
+        .environment(\.colorScheme, .dark)
         .animation(.spring(response: 0.35, dampingFraction: 0.78), value: isExpanded)
         .onReceive(NotificationCenter.default.publisher(for: .notchPanelExpandedChanged)) { note in
             if let expanded = note.object as? Bool {
