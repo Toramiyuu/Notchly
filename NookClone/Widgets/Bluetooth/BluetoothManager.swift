@@ -22,17 +22,27 @@ class BluetoothManager: ObservableObject {
     private var disconnectNotif: IOBluetoothUserNotification?
 
     private init() {
-        refresh()
+        // Do NOT call any IOBluetooth or CoreBluetooth APIs here.
+        // On macOS 15, accessing CBManager.authorization before the user has granted
+        // Bluetooth permission crashes the app via a TCC violation (SIGABRT).
+        // All initialization is deferred to startIfNeeded(), which is called when
+        // the Bluetooth widget becomes visible.
+    }
+
+    /// Called when the Bluetooth widget view appears. Safe to call multiple times.
+    func startIfNeeded() {
+        guard refreshTimer == nil else { return }
         startTimer()
+        refresh()
         observeConnectionEvents()
     }
 
     // MARK: - Refresh
 
     func refresh() {
-        // On macOS 15, IOBluetoothDevice.pairedDevices() crashes if Bluetooth access
-        // hasn't been explicitly authorized yet. Guard here — the widget shows empty
-        // until the user grants permission in System Settings > Privacy > Bluetooth.
+        // IOBluetoothDevice.pairedDevices() crashes on macOS 15 without Bluetooth
+        // authorization. CBManager.authorization itself also triggers the TCC check,
+        // so we must never call it before the user has interacted with the widget.
         guard CBManager.authorization == .allowedAlways else { return }
         let paired = IOBluetoothDevice.pairedDevices() as? [IOBluetoothDevice] ?? []
         devices = paired.map { device in

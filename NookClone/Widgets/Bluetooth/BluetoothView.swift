@@ -5,18 +5,21 @@ struct BluetoothView: View {
     @ObservedObject private var manager = BluetoothManager.shared
 
     var body: some View {
-        if manager.devices.isEmpty {
-            emptyState
-        } else {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 4) {
-                    ForEach(manager.devices) { device in
-                        BluetoothRow(device: device)
+        Group {
+            if manager.devices.isEmpty {
+                emptyState
+            } else {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 4) {
+                        ForEach(manager.devices) { device in
+                            BluetoothRow(device: device)
+                        }
                     }
                 }
+                .frame(maxHeight: 110)
             }
-            .frame(maxHeight: 110)
         }
+        .onAppear { manager.startIfNeeded() }
     }
 
     private var emptyState: some View {
