@@ -43,11 +43,12 @@ struct MarqueeText: View {
         GeometryReader { geo in
             let cw = geo.size.width
             ZStack(alignment: .leading) {
-                // Invisible text to measure width
+                // Invisible text to measure width; .id(text) forces remount on track change
                 Text(text)
                     .font(font)
                     .lineLimit(1)
                     .fixedSize()
+                    .id(text)
                     .background(
                         GeometryReader { inner in
                             Color.clear.onAppear {

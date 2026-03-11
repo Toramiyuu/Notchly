@@ -136,8 +136,8 @@ class NotchWindowController: NSWindowController {
         computeFrames(widgetHeight: currentWidgetHeight)
         NotificationCenter.default.post(name: .notchPanelExpandedChanged, object: true)
         NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.3
-            ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+            ctx.duration = 0.35
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
             window?.animator().setFrame(expandedFrame, display: true)
         }
     }
@@ -149,7 +149,7 @@ class NotchWindowController: NSWindowController {
         window?.hasShadow = false
         NotificationCenter.default.post(name: .notchPanelExpandedChanged, object: false)
         NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.25
+            ctx.duration = 0.3
             ctx.timingFunction = CAMediaTimingFunction(name: .easeIn)
             window?.animator().setFrame(collapsedFrame, display: true)
         } completionHandler: { [weak self] in
@@ -159,7 +159,7 @@ class NotchWindowController: NSWindowController {
 
     func collapseIfNeeded() {
         guard !isPinned else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
             guard let self, !self.isPinned else { return }
             let mouse = NSEvent.mouseLocation
             if let frame = self.window?.frame, !frame.contains(mouse) {
