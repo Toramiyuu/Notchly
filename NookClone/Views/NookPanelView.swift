@@ -9,15 +9,15 @@ struct NookPanelView: View {
         GeometryReader { geo in
             ZStack(alignment: .top) {
                 if isExpanded {
-                    // Frosted glass panel
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                .strokeBorder(.white.opacity(0.12), lineWidth: 1)
-                        )
-                        .shadow(color: .black.opacity(0.45), radius: 24, x: 0, y: 8)
-                        .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
+                    // Flat top so panel flows directly out of the notch; rounded bottom corners only
+                    UnevenRoundedRectangle(
+                        topLeadingRadius: 0, bottomLeadingRadius: 20,
+                        bottomTrailingRadius: 20, topTrailingRadius: 0,
+                        style: .continuous
+                    )
+                    .fill(.black)
+                    .shadow(color: .black.opacity(0.45), radius: 24, x: 0, y: 8)
+                    .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
                 }
 
                 VStack(spacing: 0) {
@@ -30,6 +30,7 @@ struct NookPanelView: View {
                     if isExpanded {
                         WidgetContainerView()
                             .padding(.horizontal, 14)
+                            .padding(.top, 10)
                             .padding(.bottom, 14)
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }

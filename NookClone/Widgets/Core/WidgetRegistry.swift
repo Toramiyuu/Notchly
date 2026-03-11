@@ -52,7 +52,7 @@ class WidgetRegistry: ObservableObject {
                 id: "droparea",
                 title: "Drop Area",
                 icon: "tray.and.arrow.down",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 200,
                 makeBody: { AnyView(DropAreaView()) },
                 makeSettingsView: { AnyView(DropAreaSettingsView()) }
@@ -61,7 +61,7 @@ class WidgetRegistry: ObservableObject {
                 id: "notes",
                 title: "Notes",
                 icon: "note.text",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 260,
                 makeBody: { AnyView(NotesView()) },
                 makeSettingsView: { AnyView(NotesWidgetSettingsView()) }
@@ -70,7 +70,7 @@ class WidgetRegistry: ObservableObject {
                 id: "hud",
                 title: "HUD",
                 icon: "speaker.wave.2",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 140,
                 makeBody: { AnyView(HUDWidgetView()) },
                 makeSettingsView: { AnyView(HUDSettingsView()) }
@@ -79,7 +79,7 @@ class WidgetRegistry: ObservableObject {
                 id: "quickapps",
                 title: "Quick Apps",
                 icon: "square.grid.2x2",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 140,
                 makeBody: { AnyView(QuickAppsView()) },
                 makeSettingsView: { AnyView(QuickAppsSettingsView()) }
@@ -97,7 +97,7 @@ class WidgetRegistry: ObservableObject {
                 id: "sysmonitor",
                 title: "System",
                 icon: "gauge.with.dots.needle.bottom.50percent",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 150,
                 makeBody: { AnyView(SystemMonitorView()) },
                 makeSettingsView: { AnyView(SystemMonitorSettingsView()) }
@@ -115,7 +115,7 @@ class WidgetRegistry: ObservableObject {
                 id: "todo",
                 title: "Todo",
                 icon: "checklist",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 200,
                 makeBody: { AnyView(TodoView()) },
                 makeSettingsView: { AnyView(TodoSettingsView()) }
@@ -124,7 +124,7 @@ class WidgetRegistry: ObservableObject {
                 id: "shortcuts",
                 title: "Shortcuts",
                 icon: "arrow.trianglehead.2.clockwise",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 140,
                 makeBody: { AnyView(ShortcutsView()) },
                 makeSettingsView: { AnyView(ShortcutsSettingsView()) }
@@ -133,7 +133,7 @@ class WidgetRegistry: ObservableObject {
                 id: "mirror",
                 title: "Mirror",
                 icon: "camera.metering.center.weighted",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 190,
                 makeBody: { AnyView(MirrorView()) },
                 makeSettingsView: { AnyView(MirrorSettingsView()) }
@@ -142,7 +142,7 @@ class WidgetRegistry: ObservableObject {
                 id: "bluetooth",
                 title: "Bluetooth",
                 icon: "bluetooth",
-                isEnabled: true,
+                isEnabled: false,
                 preferredHeight: 190,
                 makeBody: { AnyView(BluetoothView()) },
                 makeSettingsView: { AnyView(BluetoothSettingsView()) }

@@ -8,6 +8,7 @@ struct WidgetContainerView: View {
     // @AppStorage does not support Optional<String> so we use "" as the sentinel
     @AppStorage("nookclone.lastWidgetTab") private var selectedWidgetID: String = ""
     @Namespace private var tabNamespace
+    @State private var slideForward = true
 
     var body: some View {
         let enabled = registry.enabledWidgets
@@ -21,6 +22,7 @@ struct WidgetContainerView: View {
                 }
                 widgetContent(enabled)
                     .frame(maxWidth: .infinity)
+                    .clipped()
             }
         }
     }
@@ -31,6 +33,11 @@ struct WidgetContainerView: View {
                 ForEach(widgets) { widget in
                     let selected = isSelected(widget, in: widgets)
                     Button {
+                        let currentIdx = widgets.firstIndex(where: { $0.id == selectedWidgetID }) ?? 0
+                        let newIdx = widgets.firstIndex(where: { $0.id == widget.id }) ?? 0
+                        slideForward = newIdx >= currentIdx
+                        // Post height immediately so window resizes in sync with the tab switch
+                        NotificationCenter.default.post(name: .notchPanelHeightChanged, object: widget.preferredHeight)
                         withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
                             selectedWidgetID = widget.id
                         }
@@ -73,6 +80,11 @@ struct WidgetContainerView: View {
             : widgets.first?.id
         if let id = activeID, let widget = widgets.first(where: { $0.id == id }) {
             widget.makeBody()
+                .id(id)
+                .transition(.asymmetric(
+                    insertion: .move(edge: slideForward ? .trailing : .leading).combined(with: .opacity),
+                    removal: .move(edge: slideForward ? .leading : .trailing).combined(with: .opacity)
+                ))
                 .onAppear {
                     NotificationCenter.default.post(
                         name: .notchPanelHeightChanged,
