@@ -6,7 +6,7 @@ struct WidgetContainerView: View {
     @ObservedObject private var registry = WidgetRegistry.shared
     // Empty string = "no explicit selection, use first enabled widget"
     // @AppStorage does not support Optional<String> so we use "" as the sentinel
-    @AppStorage("nookclone.lastWidgetTab") private var selectedWidgetID: String = ""
+    @AppStorage("notchly.lastWidgetTab") private var selectedWidgetID: String = ""
     @Namespace private var tabNamespace
     @State private var slideForward = true
 

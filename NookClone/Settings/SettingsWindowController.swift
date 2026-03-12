@@ -11,7 +11,7 @@ class SettingsWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "NookClone Settings"
+        window.title = "Notchly Settings"
         window.center()
         window.contentView = NSHostingView(rootView: SettingsRootView())
         self.init(window: window)

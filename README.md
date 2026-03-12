@@ -1,6 +1,6 @@
-# NookClone
+# Notchly
 
-A clean-room SwiftUI replica of [NotchNook](https://lo.cafe/notchnook) — a macOS utility that repurposes the MacBook notch as an interactive productivity panel.
+A Dynamic Island-style notch panel for macOS. Hover to expand widgets; when music plays, the notch widens into a live pill showing album art and an animated spectrograph.
 
 ## Features
 
@@ -32,11 +32,11 @@ When music is playing, the collapsed notch expands into a Dynamic Island-style l
 brew install xcodegen
 
 # Generate Xcode project
-cd ~/Desktop/NookClone
+cd ~/Desktop/Notchly
 xcodegen generate
 
 # Open in Xcode
-open NookClone.xcodeproj
+open Notchly.xcodeproj
 ```
 
 Then press **⌘R** to build and run.
@@ -53,7 +53,7 @@ Then press **⌘R** to build and run.
 ## Architecture
 
 ```
-NookClone/
+Notchly/
 ├── App/           - AppDelegate, app entry point
 ├── Window/        - NotchWindowController, hover detection, fullscreen monitoring
 ├── Widgets/
@@ -68,7 +68,7 @@ NookClone/
 
 ## Privacy
 
-NookClone does not collect or transmit any data. All data (notes, settings) is stored locally in `~/Library/Application Support/NookClone/`.
+Notchly does not collect or transmit any data. All data (notes, settings) is stored locally in `~/Library/Application Support/Notchly/`.
 
 ## License
 

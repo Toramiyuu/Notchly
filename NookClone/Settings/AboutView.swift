@@ -13,14 +13,14 @@ struct AboutView: View {
                 .foregroundStyle(.primary)
 
             VStack(spacing: 4) {
-                Text("NookClone")
+                Text("Notchly")
                     .font(.title.bold())
                 Text("Version \(version)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
-            Text("A clean-room SwiftUI replica of the NotchNook notch utility for macOS.")
+            Text("A Dynamic Island-style notch panel for macOS with widgets.")
                 .multilineTextAlignment(.center)
                 .font(.body)
                 .foregroundStyle(.secondary)

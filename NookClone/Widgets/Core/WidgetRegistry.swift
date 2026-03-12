@@ -8,8 +8,8 @@ class WidgetRegistry: ObservableObject {
 
     @Published var widgets: [WidgetEntry] = []
 
-    private let orderKey = "nookclone.widgetOrder"
-    private let enabledKey = "nookclone.widgetEnabled"
+    private let orderKey = "notchly.widgetOrder"
+    private let enabledKey = "notchly.widgetEnabled"
 
     struct WidgetEntry: Identifiable {
         let id: String

@@ -2,24 +2,24 @@ import AppKit
 import SwiftUI
 
 @main
-struct NookCloneApp: App {
+struct NotchlyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
         // MenuBarExtra provides the status bar item and menu (macOS 13+)
-        MenuBarExtra("NookClone", systemImage: "rectangle.topthird.inset.filled") {
+        MenuBarExtra("Notchly", systemImage: "rectangle.topthird.inset.filled") {
             Button("Settings...") {
                 appDelegate.openSettings()
             }
             .keyboardShortcut(",")
 
-            Button("About NookClone") {
+            Button("About Notchly") {
                 appDelegate.showAbout()
             }
 
             Divider()
 
-            Button("Quit NookClone") {
+            Button("Quit Notchly") {
                 NSApplication.shared.terminate(nil)
             }
             .keyboardShortcut("q")
@@ -84,7 +84,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 backing: .buffered,
                 defer: false
             )
-            window.title = "About NookClone"
+            window.title = "About Notchly"
             window.center()
             window.contentView = NSHostingView(rootView: AboutView())
             window.isReleasedWhenClosed = false
@@ -117,7 +117,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return true  // consumed
         }
 
-        // Local monitor fires when NookClone itself is focused
+        // Local monitor fires when Notchly itself is focused
         localHotkeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             handler(event) ? nil : event
         }
@@ -129,7 +129,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
         // If Accessibility not yet granted, HUDInterceptor.start() above already prompted the user.
-        // The local monitor still works when NookClone is focused.
+        // The local monitor still works when Notchly is focused.
     }
 }
 

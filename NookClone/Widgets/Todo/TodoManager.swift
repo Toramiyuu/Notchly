@@ -24,7 +24,7 @@ class TodoManager: ObservableObject {
 
     private init() {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first!.appendingPathComponent("NookClone", isDirectory: true)
+            .first!.appendingPathComponent("Notchly", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         savePath = dir.appendingPathComponent("todos.json")
         load()

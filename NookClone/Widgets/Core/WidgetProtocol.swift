@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Conceptual protocol for a NookClone widget.
+/// Conceptual protocol for a Notchly widget.
 /// Concrete widgets are registered in WidgetRegistry using view-builder closures.
 ///
 /// To add a new widget:

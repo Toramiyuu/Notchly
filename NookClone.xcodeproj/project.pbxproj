@@ -649,7 +649,7 @@
 					"-framework CoreLocation",
 					"-framework IOBluetooth",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nookclone.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.notchly.app;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
 			};
@@ -680,7 +680,7 @@
 					"-framework CoreLocation",
 					"-framework IOBluetooth",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.nookclone.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.notchly.app;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
 			};
