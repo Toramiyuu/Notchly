@@ -135,19 +135,16 @@ class NotchWindowController: NSWindowController {
 
     private func checkHover() {
         let mouse = NSEvent.mouseLocation
-        if !isExpanded {
-            let hovering = (isLive ? liveFrame : collapsedFrame).contains(mouse)
-            if hovering != isHoveringCollapsed {
-                isHoveringCollapsed = hovering
-                NotificationCenter.default.post(name: .notchPillHoverChanged, object: hovering)
-            }
-            if hovering && GeneralSettings.shared.openOnHover { expand() }
-        } else if !isPinned {
-            if isHoveringCollapsed {
-                isHoveringCollapsed = false
-                NotificationCenter.default.post(name: .notchPillHoverChanged, object: false)
-            }
-            if !isAnimating, let frame = window?.frame, !frame.contains(mouse) { collapseIfNeeded() }
+        let hoverFrame = isExpanded ? expandedFrame : (isLive ? liveFrame : collapsedFrame)
+        let hovering = hoverFrame.contains(mouse)
+        if hovering != isHoveringCollapsed {
+            isHoveringCollapsed = hovering
+            NotificationCenter.default.post(name: .notchPillHoverChanged, object: hovering)
+        }
+        if hovering && !isExpanded {
+            expand()
+        } else if !hovering && !isAnimating {
+            collapseIfNeeded()
         }
     }
 
@@ -232,9 +229,7 @@ class NotchWindowController: NSWindowController {
     }
 
     @objc private func handleTap() {
-        guard GeneralSettings.shared.openOnClick else { return }
-        isPinned.toggle()
-        if isPinned { expand() } else { collapseIfNeeded() }
+        // Panel is always expanded — tapping has no effect
     }
 
     func setHidden(_ hidden: Bool) {

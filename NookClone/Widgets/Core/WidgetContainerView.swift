@@ -43,15 +43,16 @@ struct WidgetContainerView: View {
                     VStack(spacing: 3) {
                         Image(systemName: widget.icon)
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(selected ? .white : .white.opacity(0.35))
+                            .foregroundStyle(selected ? .white : .white.opacity(0.55))
                         Text(widget.title)
-                            .font(.system(size: 8, weight: .medium))
-                            .foregroundStyle(selected ? .white.opacity(0.9) : .white.opacity(0.3))
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(selected ? .white.opacity(0.9) : .white.opacity(0.5))
                             .lineLimit(1)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
                     .background {
+                        Color.white.opacity(0.001)
                         if selected {
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                 .fill(.white.opacity(0.18))
@@ -59,9 +60,9 @@ struct WidgetContainerView: View {
                                 .padding(.horizontal, 4)
                         }
                     }
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .contentShape(Rectangle())
                 .animation(.spring(response: 0.25, dampingFraction: 0.8), value: selected)
             }
         }
