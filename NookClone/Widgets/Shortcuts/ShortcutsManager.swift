@@ -69,7 +69,7 @@ class ShortcutsManager: ObservableObject {
     // MARK: - Shell helper
 
     @discardableResult
-    private static func shell(_ path: String, _ args: [String]) -> String {
+    private static func shell(_ path: String, _ args: [String], timeout: TimeInterval = 10) -> String {
         let proc = Process()
         proc.executableURL = URL(fileURLWithPath: path)
         proc.arguments = args
@@ -77,7 +77,11 @@ class ShortcutsManager: ObservableObject {
         proc.standardOutput = pipe
         proc.standardError = Pipe()
         try? proc.run()
+        // Terminate after timeout so a slow `shortcuts list` doesn't block the background thread
+        let item = DispatchWorkItem { if proc.isRunning { proc.terminate() } }
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + timeout, execute: item)
         proc.waitUntilExit()
+        item.cancel()
         return String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
     }
 }

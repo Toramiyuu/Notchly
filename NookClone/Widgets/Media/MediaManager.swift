@@ -40,6 +40,9 @@ class MediaManager: ObservableObject {
     private var pollTimer: Timer?
     private var lastArtworkKey = ""
     private var cachedArtwork: NSImage?
+    /// Serialises all reads/writes to lastArtworkKey and cachedArtwork, which are
+    /// accessed from both the background refresh queue and the main thread.
+    private let artworkQueue = DispatchQueue(label: "com.notchly.artworkCache")
 
     private init() {
         startPolling()
@@ -122,13 +125,12 @@ class MediaManager: ObservableObject {
         let position = (app.value(forKey: "playerPosition") as? Double) ?? 0
 
         let artKey = "\(title)-\(artist)"
-        let artwork: NSImage?
-        if artKey == lastArtworkKey {
-            artwork = cachedArtwork
-        } else {
-            artwork = loadMusicArtwork(from: track)
+        let artwork: NSImage? = artworkQueue.sync {
+            if artKey == lastArtworkKey { return cachedArtwork }
+            let img = loadMusicArtwork(from: track)
             lastArtworkKey = artKey
-            cachedArtwork = artwork
+            cachedArtwork = img
+            return img
         }
 
         return TrackInfo(
@@ -172,12 +174,11 @@ class MediaManager: ObservableObject {
 
         // Fetch artwork from Spotify via the artworkUrl SB key (Spotify SB dictionary, current as of Spotify 1.x)
         let artKey = "\(title)-\(artist)"
-        let artwork: NSImage?
-        if artKey == lastArtworkKey {
-            artwork = cachedArtwork
-        } else {
-            artwork = nil  // Will be fetched asynchronously below
+        let artwork: NSImage? = artworkQueue.sync {
+            if artKey == lastArtworkKey { return cachedArtwork }
+            // Artwork will arrive asynchronously; kick off fetch and return nil for now
             fetchSpotifyArtwork(track: track, artKey: artKey)
+            return nil
         }
 
         return TrackInfo(
@@ -204,9 +205,11 @@ class MediaManager: ObservableObject {
 
         URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard let self, let data, let image = NSImage(data: data) else { return }
-            DispatchQueue.main.async {
+            self.artworkQueue.sync {
                 self.lastArtworkKey = artKey
                 self.cachedArtwork = image
+            }
+            DispatchQueue.main.async {
                 // Patch artwork into currentTrack without a full refresh
                 if var track = self.currentTrack, track.source == .spotify {
                     track.artwork = image
