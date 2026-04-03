@@ -86,6 +86,8 @@ class NotchWindowController: NSWindowController {
         guard let window else { return }
         let hosting = ClickThroughHostingView(rootView: NookPanelView())
         hosting.autoresizingMask = [.width, .height]
+        hosting.wantsLayer = true
+        hosting.layer?.backgroundColor = CGColor(red: 0, green: 0, blue: 0, alpha: 0)
         window.contentView = hosting
     }
 
@@ -277,6 +279,7 @@ private extension Comparable {
 /// the window, one to trigger the action.
 private final class ClickThroughHostingView<Content: View>: NSHostingView<Content> {
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+    override var isOpaque: Bool { false }
 }
 
 // MARK: - NotchWindow

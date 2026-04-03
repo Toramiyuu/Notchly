@@ -14,20 +14,21 @@ struct NookPanelView: View {
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .top) {
+                // Shadow layer — drawn behind and outside the clip so it isn't cut off
                 if isExpanded {
-                    // Flat top so panel flows directly out of the notch; rounded bottom corners only
                     UnevenRoundedRectangle(
                         topLeadingRadius: 0, bottomLeadingRadius: 20,
                         bottomTrailingRadius: 20, topTrailingRadius: 0,
                         style: .continuous
                     )
-                    .fill(.black)
+                    .fill(.black.opacity(0.001))
                     .shadow(color: .black.opacity(0.45), radius: 24, x: 0, y: 8)
                     .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
                 }
 
+                // Content clipped to the panel shape so widget backgrounds
+                // never bleed into the transparent corner regions
                 VStack(spacing: 0) {
-                    // Notch pill — tapping toggles pin
                     notchPill
                         .onTapGesture {
                             NotificationCenter.default.post(name: .notchPanelTapped, object: nil)
@@ -41,6 +42,16 @@ struct NookPanelView: View {
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                 }
+                .background(isExpanded ? .black : .clear)
+                .clipShape(
+                    UnevenRoundedRectangle(
+                        topLeadingRadius: 0,
+                        bottomLeadingRadius: isExpanded ? 20 : 0,
+                        bottomTrailingRadius: isExpanded ? 20 : 0,
+                        topTrailingRadius: 0,
+                        style: .continuous
+                    )
+                )
             }
             .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
