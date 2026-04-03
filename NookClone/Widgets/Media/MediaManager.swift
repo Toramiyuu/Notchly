@@ -79,11 +79,27 @@ class MediaManager: ObservableObject {
 
     func refresh() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            let info = self?.fetchMusicInfo() ?? self?.fetchSpotifyInfo()
+            guard let self else { return }
+            // Skip expensive ScriptingBridge calls when neither player is running
+            let apps = NSWorkspace.shared.runningApplications
+            let musicRunning = apps.contains { $0.bundleIdentifier == "com.apple.Music" }
+            let spotifyRunning = apps.contains { $0.bundleIdentifier == "com.spotify.client" }
+            guard musicRunning || spotifyRunning else {
+                DispatchQueue.main.async {
+                    if self.currentTrack != nil {
+                        self.currentTrack = nil
+                        self.isPlaying = false
+                        self.progress = 0
+                    }
+                }
+                return
+            }
+            let info = (musicRunning ? self.fetchMusicInfo() : nil)
+                    ?? (spotifyRunning ? self.fetchSpotifyInfo() : nil)
             DispatchQueue.main.async {
-                self?.currentTrack = info
-                self?.isPlaying = info?.isPlaying ?? false
-                self?.progress = info.map { $0.duration > 0 ? $0.position / $0.duration : 0 } ?? 0
+                self.currentTrack = info
+                self.isPlaying = info?.isPlaying ?? false
+                self.progress = info.map { $0.duration > 0 ? $0.position / $0.duration : 0 } ?? 0
             }
         }
     }

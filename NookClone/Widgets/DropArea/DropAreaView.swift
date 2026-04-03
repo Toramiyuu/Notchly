@@ -2,13 +2,21 @@ import SwiftUI
 import AppKit
 import UniformTypeIdentifiers
 
-struct DroppedItem: Identifiable {
-    let id = UUID()
-    let url: URL?
+struct DroppedItem: Identifiable, Codable {
+    let id: UUID
+    let urlString: String?
     let text: String?
+
+    var url: URL? { urlString.flatMap { URL(string: $0) } }
     var icon: NSImage? { url.flatMap { NSWorkspace.shared.icon(forFile: $0.path) } }
     var displayName: String {
         url?.lastPathComponent ?? String((text ?? "Text").prefix(20))
+    }
+
+    init(url: URL?, text: String?) {
+        self.id = UUID()
+        self.urlString = url?.absoluteString
+        self.text = text
     }
 }
 
@@ -16,16 +24,42 @@ class DropAreaStore: ObservableObject {
     static let shared = DropAreaStore()
     @Published var items: [DroppedItem] = []
 
+    private let savePath: URL
+
+    private init() {
+        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first!.appendingPathComponent("Notchly", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        savePath = dir.appendingPathComponent("droparea.json")
+        load()
+    }
+
     func add(_ item: DroppedItem) {
         if items.count >= DropAreaSettings.shared.maxItems { items.removeFirst() }
         items.append(item)
+        save()
     }
 
     func remove(_ id: UUID) {
         items.removeAll { $0.id == id }
+        save()
     }
 
-    func clear() { items.removeAll() }
+    func clear() {
+        items.removeAll()
+        save()
+    }
+
+    private func save() {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        try? data.write(to: savePath, options: .atomic)
+    }
+
+    private func load() {
+        guard let data = try? Data(contentsOf: savePath),
+              let saved = try? JSONDecoder().decode([DroppedItem].self, from: data) else { return }
+        items = saved
+    }
 }
 
 struct DropAreaView: View {

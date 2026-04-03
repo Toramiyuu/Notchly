@@ -98,6 +98,7 @@ class BluetoothManager: ObservableObject {
         switch major {
         case 0x0100: return "desktopcomputer"               // Computer
         case 0x0200: return "phone"                         // Phone
+        case 0x0300: return "printer.fill"                  // Imaging (printer, scanner, camera)
         case 0x0400:                                        // Audio/Video
             switch minor {
             case 0x04, 0x08, 0x18: return "headphones"     // Headphones / headset / hi-fi
@@ -109,6 +110,8 @@ class BluetoothManager: ObservableObject {
             if minorBits & 0x40 != 0 { return "keyboard" }
             if minorBits & 0x80 != 0 { return "computermouse" }
             return "gamecontroller"
+        case 0x0600: return "applewatch"                    // Wearable
+        case 0x0700: return "antenna.radiowaves.left.and.right" // Toy
         default: return "bluetooth"
         }
     }

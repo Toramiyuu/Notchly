@@ -61,7 +61,12 @@ class SystemMonitorManager: ObservableObject {
 
         let result = host_processor_info(mach_host_self(), PROCESSOR_CPU_LOAD_INFO,
                                          &numCPUs, &cpuInfo, &numCPUInfo)
-        guard result == KERN_SUCCESS, let info = cpuInfo else { return 0 }
+        guard result == KERN_SUCCESS, let info = cpuInfo else {
+            // Clear stale snapshot so the next successful call uses absolute values
+            prevCPUInfo = nil
+            prevCPUInfoCount = 0
+            return 0
+        }
         defer {
             let size = vm_size_t(numCPUInfo) * vm_size_t(MemoryLayout<integer_t>.size)
             vm_deallocate(mach_task_self_, vm_address_t(bitPattern: info), size)

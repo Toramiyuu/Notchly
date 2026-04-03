@@ -147,6 +147,24 @@ class WidgetRegistry: ObservableObject {
                 makeBody: { AnyView(BluetoothView()) },
                 makeSettingsView: { AnyView(BluetoothSettingsView()) }
             ),
+            WidgetEntry(
+                id: "bookmarks",
+                title: "Bookmarks",
+                icon: "bookmark.fill",
+                isEnabled: false,
+                preferredHeight: 200,
+                makeBody: { AnyView(BookmarksView()) },
+                makeSettingsView: { AnyView(BookmarksSettingsView()) }
+            ),
+            WidgetEntry(
+                id: "news",
+                title: "News",
+                icon: "newspaper.fill",
+                isEnabled: false,
+                preferredHeight: 260,
+                makeBody: { AnyView(NewsView()) },
+                makeSettingsView: { AnyView(NewsSettingsView()) }
+            ),
         ]
     }
 

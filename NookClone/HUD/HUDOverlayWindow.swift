@@ -65,7 +65,10 @@ class HUDOverlayWindow: NSWindow {
             object: HUDEvent(type: type, value: value)
         )
 
-        // Also show the floating overlay (user can reposition / disable in settings)
+        // Only show the floating overlay when positioned away from the notch —
+        // the notch pill already displays it inline when set to "Below Notch".
+        guard HUDSettings.shared.position != .belowNotch else { return }
+
         hostingController?.rootView = HUDContainerView(type: type, value: value)
         reposition()
 

@@ -34,7 +34,19 @@ class ShortcutsManager: ObservableObject {
         guard runningName == nil else { return }
         runningName = name
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            Self.shell("/usr/bin/shortcuts", ["run", name])
+            let proc = Process()
+            proc.executableURL = URL(fileURLWithPath: "/usr/bin/shortcuts")
+            proc.arguments = ["run", name]
+            proc.standardOutput = Pipe()
+            proc.standardError = Pipe()
+            try? proc.run()
+
+            // Time out after 30 seconds so a hung shortcut doesn't lock the UI forever
+            let deadline = DispatchTime.now() + 30
+            DispatchQueue.global(qos: .utility).asyncAfter(deadline: deadline) {
+                if proc.isRunning { proc.terminate() }
+            }
+            proc.waitUntilExit()
             DispatchQueue.main.async { self?.runningName = nil }
         }
     }

@@ -71,7 +71,7 @@ class CalendarManager: ObservableObject {
         guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return }
 
         let calendars: [EKCalendar]? = calendarFilter.isEmpty ? nil :
-            store.calendars(for: .event).filter { calendarFilter.isEmpty || !calendarFilter.contains($0.calendarIdentifier) }
+            store.calendars(for: .event).filter { !calendarFilter.contains($0.calendarIdentifier) }
 
         let predicate = store.predicateForEvents(
             withStart: startOfDay,

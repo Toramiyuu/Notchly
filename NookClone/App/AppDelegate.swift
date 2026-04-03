@@ -63,9 +63,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func setupNotchWindow() {
-        guard let notchScreen = NotchScreenDetector.notchScreen() else { return }
-        notchWindowController = NotchWindowController(screen: notchScreen)
+        guard let screen = NotchScreenDetector.notchScreen() else { return }
+        if !NotchScreenDetector.hasNotch(screen),
+           !UserDefaults.standard.bool(forKey: "general.noNotchAlertDismissed") {
+            showNoNotchAlert()
+        }
+        notchWindowController = NotchWindowController(screen: screen)
         notchWindowController?.showWindow(nil)
+    }
+
+    private func showNoNotchAlert() {
+        let alert = NSAlert()
+        alert.messageText = "No Notch Detected"
+        alert.informativeText = "Notchly is designed for MacBooks with a notch. The panel will appear at the top of your screen but may not look as intended."
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "Continue")
+        alert.addButton(withTitle: "Quit")
+        alert.showsSuppressionButton = true
+        alert.suppressionButton?.title = "Don't show again"
+        let response = alert.runModal()
+        if alert.suppressionButton?.state == .on {
+            UserDefaults.standard.set(true, forKey: "general.noNotchAlertDismissed")
+        }
+        if response == .alertSecondButtonReturn {
+            NSApplication.shared.terminate(nil)
+        }
     }
 
     func openSettings() {
@@ -100,36 +122,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - Global hotkey (Option+N)
 
+    private func handleHotkeyEvent(_ event: NSEvent) -> Bool {
+        guard GeneralSettings.shared.hotkeyEnabled else { return false }
+        guard event.keyCode == 45,
+              event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .option else {
+            return false
+        }
+        guard let controller = notchWindowController else { return true }
+        if controller.isExpanded {
+            controller.collapse()
+        } else {
+            controller.expand()
+        }
+        return true
+    }
+
     private func setupHotkey() {
-        let handler: (NSEvent) -> Bool = { [weak self] event in
-            guard GeneralSettings.shared.hotkeyEnabled else { return false }
-            // Option+N: keyCode 45 ('n'), modifierFlags must be exactly .option
-            guard event.keyCode == 45,
-                  event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .option else {
-                return false
-            }
-            guard let controller = self?.notchWindowController else { return true }
-            if controller.isExpanded {
-                controller.collapse()
-            } else {
-                controller.expand()
-            }
-            return true  // consumed
+        localHotkeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            (self?.handleHotkeyEvent(event) ?? false) ? nil : event
         }
 
-        // Local monitor fires when Notchly itself is focused
-        localHotkeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            handler(event) ? nil : event
-        }
+        installGlobalHotkeyIfNeeded()
 
-        // Global monitor fires when any other app is focused — requires Accessibility permission
-        if AXIsProcessTrusted() {
-            globalHotkeyMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
-                _ = handler(event)
-            }
+        NotificationCenter.default.addObserver(
+            forName: .accessibilityPermissionGranted, object: nil, queue: .main
+        ) { [weak self] _ in
+            self?.installGlobalHotkeyIfNeeded()
         }
-        // If Accessibility not yet granted, HUDInterceptor.start() above already prompted the user.
-        // The local monitor still works when Notchly is focused.
+    }
+
+    private func installGlobalHotkeyIfNeeded() {
+        guard globalHotkeyMonitor == nil, AXIsProcessTrusted() else { return }
+        globalHotkeyMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            _ = self?.handleHotkeyEvent(event)
+        }
     }
 }
 

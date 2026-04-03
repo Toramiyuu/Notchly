@@ -30,7 +30,6 @@
 		65F6C1B4F5F62E78B631EA9C /* SystemMonitorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DBE9D0867DC8F886D601E4 /* SystemMonitorView.swift */; };
 		68ACFB94001C200EBE135330 /* MediaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10374CB40828A1F4AEA48C5 /* MediaWidget.swift */; };
 		69F41B8FA56370F0DA51EB39 /* ShelfTrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE56A1A4633A8F7155EEED44 /* ShelfTrayView.swift */; };
-		6D875BB798EB646D83C7F42D /* NotchHoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953855686171128E91D1A3BF /* NotchHoverController.swift */; };
 		6E11313DB1979571DE676148 /* MirrorSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7101303F8DBFD60D0828E269 /* MirrorSettingsView.swift */; };
 		6E944A5678893C8D761FB146 /* NoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AEEEC962239D55823C3200 /* NoteEditorView.swift */; };
 		712F761AA5EF43E11AF5C402 /* NotchScreenDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6A3F3F06291E31BFABCBC8 /* NotchScreenDetector.swift */; };
@@ -67,10 +66,22 @@
 		E4DB28AD02FA8FECCCB8EDD1 /* TodoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9941303153DD530506252B /* TodoManager.swift */; };
 		E69B63C20DF2AAFDAD3DD9CB /* DropAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC4D6FBC039E3354CE113611 /* DropAreaView.swift */; };
 		F44CE7AFC4AD1EC1869E7FBC /* SystemMonitorSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E8981298003FCC24C1974F /* SystemMonitorSettingsView.swift */; };
+		AA11BB22CC33DD44EE55FF01 /* BookmarksManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF11 /* BookmarksManager.swift */; };
+		AA11BB22CC33DD44EE55FF02 /* BookmarksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF12 /* BookmarksView.swift */; };
+		AA11BB22CC33DD44EE55FF03 /* BookmarksSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF13 /* BookmarksSettingsView.swift */; };
+		AA11BB22CC33DD44EE55FF04 /* NewsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF14 /* NewsManager.swift */; };
+		AA11BB22CC33DD44EE55FF05 /* NewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF15 /* NewsView.swift */; };
+		AA11BB22CC33DD44EE55FF06 /* NewsSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA11BB22CC33DD44EE55FF16 /* NewsSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		007ED9070B8F5D7E8F615E95 /* WeatherSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSettingsView.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF11 /* BookmarksManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksManager.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF12 /* BookmarksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksView.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF13 /* BookmarksSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarksSettingsView.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF14 /* NewsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsManager.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF15 /* NewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsView.swift; sourceTree = "<group>"; };
+		AA11BB22CC33DD44EE55FF16 /* NewsSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsSettingsView.swift; sourceTree = "<group>"; };
 		00B4E65F93B1EE8F207B2094 /* WeatherManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherManager.swift; sourceTree = "<group>"; };
 		00EE23A449841F1E501AEF9E /* AlbumCoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumCoverView.swift; sourceTree = "<group>"; };
 		04204E4492140E336DA9A220 /* BluetoothSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothSettingsView.swift; sourceTree = "<group>"; };
@@ -104,7 +115,6 @@
 		83AEEEC962239D55823C3200 /* NoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditorView.swift; sourceTree = "<group>"; };
 		89067A07902B16F40CD1DCC5 /* CalendarDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDayView.swift; sourceTree = "<group>"; };
 		92F2A217D9B65E4F2C6F2778 /* FullscreenMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenMonitor.swift; sourceTree = "<group>"; };
-		953855686171128E91D1A3BF /* NotchHoverController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchHoverController.swift; sourceTree = "<group>"; };
 		9F97A7C65A447666F1BFB9B0 /* WidgetProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetProtocol.swift; sourceTree = "<group>"; };
 		A10374CB40828A1F4AEA48C5 /* MediaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaWidget.swift; sourceTree = "<group>"; };
 		A1FDB0E753FB9DFDAF5FD18A /* ClipboardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSettingsView.swift; sourceTree = "<group>"; };
@@ -174,7 +184,6 @@
 			isa = PBXGroup;
 			children = (
 				92F2A217D9B65E4F2C6F2778 /* FullscreenMonitor.swift */,
-				953855686171128E91D1A3BF /* NotchHoverController.swift */,
 				6B6A3F3F06291E31BFABCBC8 /* NotchScreenDetector.swift */,
 				FEEE0646C862E815EFB74662 /* NotchWindowController.swift */,
 			);
@@ -294,6 +303,7 @@
 			isa = PBXGroup;
 			children = (
 				E49DA088E8A81585FE128C89 /* Bluetooth */,
+				AA11BB22CC33DD44EE55FF21 /* Bookmarks */,
 				C71DAAFB08604234EA285176 /* Calendar */,
 				08072E9DD39FCDE62D395134 /* Clipboard */,
 				39387DC358C45AF8913042DE /* Core */,
@@ -306,8 +316,29 @@
 				680A368AE92B7B8972CBFC84 /* SystemMonitor */,
 				3B6FDD7B8B8824BAA22A1AF8 /* Todo */,
 				332BD2F077C2ED0E50373DFB /* Weather */,
+				AA11BB22CC33DD44EE55FF22 /* News */,
 			);
 			path = Widgets;
+			sourceTree = "<group>";
+		};
+		AA11BB22CC33DD44EE55FF21 /* Bookmarks */ = {
+			isa = PBXGroup;
+			children = (
+				AA11BB22CC33DD44EE55FF11 /* BookmarksManager.swift */,
+				AA11BB22CC33DD44EE55FF12 /* BookmarksView.swift */,
+				AA11BB22CC33DD44EE55FF13 /* BookmarksSettingsView.swift */,
+			);
+			path = Bookmarks;
+			sourceTree = "<group>";
+		};
+		AA11BB22CC33DD44EE55FF22 /* News */ = {
+			isa = PBXGroup;
+			children = (
+				AA11BB22CC33DD44EE55FF14 /* NewsManager.swift */,
+				AA11BB22CC33DD44EE55FF15 /* NewsView.swift */,
+				AA11BB22CC33DD44EE55FF16 /* NewsSettingsView.swift */,
+			);
+			path = News;
 			sourceTree = "<group>";
 		};
 		BC9F962D6718E3EEAA63E43E /* Products */ = {
@@ -470,7 +501,6 @@
 				BD2CBEB2734DC58BAF6A7F3B /* MirrorView.swift in Sources */,
 				438E11829A20EAF4D0294EFA /* NookPanelView.swift in Sources */,
 				098EB21BE019479A800EBCCD /* NotchFineTuneView.swift in Sources */,
-				6D875BB798EB646D83C7F42D /* NotchHoverController.swift in Sources */,
 				712F761AA5EF43E11AF5C402 /* NotchScreenDetector.swift in Sources */,
 				98F245677DDFD3D4CB618276 /* NotchWindowController.swift in Sources */,
 				6E944A5678893C8D761FB146 /* NoteEditorView.swift in Sources */,
@@ -487,6 +517,12 @@
 				0F31646F5E48641676E68DAA /* ShortcutsView.swift in Sources */,
 				B2C20F7FD616D8A3E697E816 /* SystemMonitorManager.swift in Sources */,
 				F44CE7AFC4AD1EC1869E7FBC /* SystemMonitorSettingsView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF01 /* BookmarksManager.swift in Sources */,
+				AA11BB22CC33DD44EE55FF02 /* BookmarksView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF03 /* BookmarksSettingsView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF04 /* NewsManager.swift in Sources */,
+				AA11BB22CC33DD44EE55FF05 /* NewsView.swift in Sources */,
+				AA11BB22CC33DD44EE55FF06 /* NewsSettingsView.swift in Sources */,
 				65F6C1B4F5F62E78B631EA9C /* SystemMonitorView.swift in Sources */,
 				E4DB28AD02FA8FECCCB8EDD1 /* TodoManager.swift in Sources */,
 				170275E96A169E4D2C79AFE7 /* TodoSettingsView.swift in Sources */,

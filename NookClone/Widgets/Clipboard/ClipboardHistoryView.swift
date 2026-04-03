@@ -88,10 +88,10 @@ private struct ClipboardItemRow: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .leading)
-        case .image(let data):
-            if let image = NSImage(data: data) {
+        case .image:
+            if let data = item.imageData, let nsImage = NSImage(data: data) {
                 HStack(spacing: 6) {
-                    Image(nsImage: image)
+                    Image(nsImage: nsImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 32, height: 20)

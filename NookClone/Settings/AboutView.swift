@@ -8,9 +8,15 @@ struct AboutView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Image(systemName: "rectangle.topthird.inset.filled")
-                .font(.system(size: 64))
-                .foregroundStyle(.primary)
+            if let appIcon = NSImage(named: NSImage.applicationIconName) {
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .frame(width: 96, height: 96)
+            } else {
+                Image(systemName: "rectangle.topthird.inset.filled")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.primary)
+            }
 
             VStack(spacing: 4) {
                 Text("Notchly")

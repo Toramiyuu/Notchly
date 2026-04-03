@@ -42,5 +42,7 @@
     <string>Notchly needs Bluetooth access to display connected devices.</string>
     <key>NSLocationUsageDescription</key>
     <string>Notchly needs your location to show local weather in the notch panel.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Notchly needs your location to show local weather in the notch panel.</string>
 </dict>
 </plist>

@@ -141,7 +141,7 @@ class NotchWindowController: NSWindowController {
             isHoveringCollapsed = hovering
             NotificationCenter.default.post(name: .notchPillHoverChanged, object: hovering)
         }
-        if hovering && !isExpanded {
+        if hovering && !isExpanded && GeneralSettings.shared.openOnHover {
             expand()
         } else if !hovering && !isAnimating {
             collapseIfNeeded()
@@ -229,7 +229,9 @@ class NotchWindowController: NSWindowController {
     }
 
     @objc private func handleTap() {
-        // Panel is always expanded — tapping has no effect
+        guard GeneralSettings.shared.openOnClick else { return }
+        isPinned.toggle()
+        if isPinned { expand() } else { collapseIfNeeded() }
     }
 
     func setHidden(_ hidden: Bool) {

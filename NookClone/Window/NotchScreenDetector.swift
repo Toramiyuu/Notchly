@@ -22,11 +22,11 @@ enum NotchScreenDetector {
         if #available(macOS 12.0, *) {
             let insets = screen.safeAreaInsets
             if insets.top > 0 {
-                // The notch sits at the top-center of the screen.
-                // safeAreaInsets.top gives us the notch height.
-                // We approximate the notch width; typical MacBook notch is ~162 pt wide.
                 let notchHeight = insets.top
-                let notchWidth: CGFloat = 162
+                // MacBook Air models (native width ≤ 2880px) have wider notch (~234pt)
+                // MacBook Pro models (native width ≥ 3024px) have narrower notch (~162pt)
+                let nativeWidth = screenFrame.width * screen.backingScaleFactor
+                let notchWidth: CGFloat = nativeWidth <= 2880 ? 234 : 162
                 let centerX = screenFrame.midX
                 return NSRect(
                     x: centerX - notchWidth / 2,

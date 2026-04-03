@@ -234,4 +234,5 @@ extension Notification.Name {
     static let notchPillHoverChanged      = Notification.Name("notchPillHoverChanged")
     static let notchHUDEvent              = Notification.Name("notchHUDEvent")
     static let notchPanelCollapseRequested = Notification.Name("notchPanelCollapseRequested")
+    static let accessibilityPermissionGranted = Notification.Name("accessibilityPermissionGranted")
 }

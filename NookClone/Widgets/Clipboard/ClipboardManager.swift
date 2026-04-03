@@ -8,19 +8,32 @@ struct ClipboardItem: Identifiable, Codable {
 
     enum Kind: Codable {
         case text(String)
-        case image(Data)   // PNG data
+        case image(String)   // filename in images directory
     }
 
     init(text: String)    { id = UUID(); date = Date(); kind = .text(text) }
-    init(imageData: Data) { id = UUID(); date = Date(); kind = .image(imageData) }
+    init(imageFilename: String) { id = UUID(); date = Date(); kind = .image(imageFilename) }
 
     var displayText: String? { guard case .text(let s) = kind else { return nil }; return s }
-    var imageData: Data?     { guard case .image(let d) = kind else { return nil }; return d }
+
+    /// Loads the image data from the images directory on disk.
+    var imageData: Data? {
+        guard case .image(let filename) = kind else { return nil }
+        return try? Data(contentsOf: ClipboardManager.imagesDir.appendingPathComponent(filename))
+    }
 }
 
 class ClipboardManager: ObservableObject {
 
     static let shared = ClipboardManager()
+
+    /// Directory where clipboard image files are stored (separate from the JSON index).
+    static let imagesDir: URL = {
+        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first!.appendingPathComponent("Notchly/clipboard-images", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir
+    }()
 
     @Published var items: [ClipboardItem] = []
 
@@ -60,8 +73,7 @@ class ClipboardManager: ObservableObject {
             object: nil, queue: .main
         ) { [weak self] _ in
             guard let self, self.autoClearOnQuit else { return }
-            self.items = []
-            try? FileManager.default.removeItem(at: self.savePath)
+            self.clear()
         }
     }
 
@@ -102,7 +114,10 @@ class ClipboardManager: ObservableObject {
                   let tiff = first.tiffRepresentation,
                   let bitmap = NSBitmapImageRep(data: tiff),
                   let png = bitmap.representation(using: .png, properties: [:]) {
-            DispatchQueue.main.async { self.addItem(ClipboardItem(imageData: png)) }
+            let filename = UUID().uuidString + ".png"
+            let fileURL = Self.imagesDir.appendingPathComponent(filename)
+            try? png.write(to: fileURL, options: .atomic)
+            DispatchQueue.main.async { self.addItem(ClipboardItem(imageFilename: filename)) }
         }
     }
 
@@ -114,7 +129,13 @@ class ClipboardManager: ObservableObject {
            case .text(let existing) = items.first?.kind,
            new == existing { return }
         items.insert(item, at: 0)
-        if items.count > maxItems { items = Array(items.prefix(maxItems)) }
+        // Remove evicted items and delete their image files
+        while items.count > maxItems {
+            let evicted = items.removeLast()
+            if case .image(let filename) = evicted.kind {
+                try? FileManager.default.removeItem(at: Self.imagesDir.appendingPathComponent(filename))
+            }
+        }
         saveToDisk()
     }
 
@@ -123,8 +144,9 @@ class ClipboardManager: ObservableObject {
         switch item.kind {
         case .text(let s):
             NSPasteboard.general.setString(s, forType: .string)
-        case .image(let data):
-            if let image = NSImage(data: data) {
+        case .image(let filename):
+            let fileURL = Self.imagesDir.appendingPathComponent(filename)
+            if let data = try? Data(contentsOf: fileURL), let image = NSImage(data: data) {
                 NSPasteboard.general.writeObjects([image])
             }
         }
@@ -141,11 +163,19 @@ class ClipboardManager: ObservableObject {
     }
 
     func remove(_ item: ClipboardItem) {
+        if case .image(let filename) = item.kind {
+            try? FileManager.default.removeItem(at: Self.imagesDir.appendingPathComponent(filename))
+        }
         items.removeAll { $0.id == item.id }
         saveToDisk()
     }
 
     func clear() {
+        for item in items {
+            if case .image(let filename) = item.kind {
+                try? FileManager.default.removeItem(at: Self.imagesDir.appendingPathComponent(filename))
+            }
+        }
         items.removeAll()
         try? FileManager.default.removeItem(at: savePath)
     }
@@ -162,10 +192,19 @@ class ClipboardManager: ObservableObject {
         if let saved = try? JSONDecoder().decode([ClipboardItem].self, from: data) {
             items = saved
         } else {
-            // Migrate from old text-only schema
-            struct LegacyItem: Decodable { let id: UUID; let text: String; let date: Date }
+            // Migrate from old schemas (text-only or inline image data)
+            // Drop image items from old format — they stored raw Data which
+            // is incompatible with the new filename-based format. Text items
+            // are preserved.
+            struct LegacyItem: Decodable {
+                let id: UUID; let date: Date; let kind: LegacyKind
+                enum LegacyKind: Decodable { case text(String); case image(Data) }
+            }
             if let old = try? JSONDecoder().decode([LegacyItem].self, from: data) {
-                items = old.map { ClipboardItem(text: $0.text) }
+                items = old.compactMap { item in
+                    guard case .text(let s) = item.kind else { return nil }
+                    return ClipboardItem(text: s)
+                }
                 saveToDisk()
             }
         }

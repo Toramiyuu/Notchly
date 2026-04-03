@@ -44,6 +44,8 @@ struct SettingsRootView: View {
         case shortcuts  = "Shortcuts"
         case mirror     = "Mirror"
         case bluetooth  = "Bluetooth"
+        case bookmarks  = "Bookmarks"
+        case news       = "News"
         case about      = "About"
 
         var id: String { rawValue }
@@ -64,6 +66,8 @@ struct SettingsRootView: View {
             case .shortcuts:  return "arrow.trianglehead.2.clockwise"
             case .mirror:     return "camera.metering.center.weighted"
             case .bluetooth:  return "bluetooth"
+            case .bookmarks:  return "bookmark.fill"
+            case .news:       return "newspaper.fill"
             case .about:      return "info.circle"
             }
         }
@@ -96,6 +100,8 @@ struct SettingsRootView: View {
                 case .shortcuts:  ShortcutsSettingsView()
                 case .mirror:     MirrorSettingsView()
                 case .bluetooth:  BluetoothSettingsView()
+                case .bookmarks:  BookmarksSettingsView()
+                case .news:       NewsSettingsView()
                 case .about:      AboutView()
                 }
             }
