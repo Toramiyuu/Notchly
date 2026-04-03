@@ -14,13 +14,17 @@ struct BookmarkItem: Identifiable, Codable {
 
     var url: URL? { URL(string: urlString) }
 
-    var favicon: NSImage? {
-        guard let url, let host = url.host else { return nil }
-        let faviconURL = URL(string: "https://www.google.com/s2/favicons?sz=64&domain=\(host)")!
-        if let data = try? Data(contentsOf: faviconURL) {
-            return NSImage(data: data)
+    func fetchFavicon(completion: @escaping (NSImage?) -> Void) {
+        guard let url, let host = url.host,
+              let faviconURL = URL(string: "https://www.google.com/s2/favicons?sz=64&domain=\(host)") else {
+            completion(nil); return
         }
-        return nil
+        var request = URLRequest(url: faviconURL)
+        request.timeoutInterval = 5
+        URLSession.shared.dataTask(with: request) { data, _, _ in
+            let image = data.flatMap { NSImage(data: $0) }
+            completion(image)
+        }.resume()
     }
 }
 

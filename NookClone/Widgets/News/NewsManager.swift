@@ -127,7 +127,7 @@ class NewsManager: NSObject, ObservableObject, XMLParserDelegate {
                 qualifiedName: String?) {
         if elementName == "item" || elementName == "entry" {
             insideItem = false
-            let title = currentTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+            let title = decodeHTMLEntities(currentTitle.trimmingCharacters(in: .whitespacesAndNewlines))
             let link  = currentLink.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !title.isEmpty else { return }
             let url = URL(string: link)
@@ -140,6 +140,20 @@ class NewsManager: NSObject, ObservableObject, XMLParserDelegate {
         let maxItems = NewsSettings.shared.maxItems
         let result = Array(parseItems.prefix(maxItems))
         DispatchQueue.main.async { self.items = result }
+    }
+
+    /// Decodes HTML entities like &amp; &quot; &#39; &lt; &gt;
+    private func decodeHTMLEntities(_ string: String) -> String {
+        guard string.contains("&") else { return string }
+        // Use NSAttributedString's HTML parser — handles all named and numeric entities
+        guard let data = string.data(using: .utf8),
+              let attributed = try? NSAttributedString(
+                data: data,
+                options: [.documentType: NSAttributedString.DocumentType.html,
+                          .characterEncoding: NSUTF8StringEncoding],
+                documentAttributes: nil
+              ) else { return string }
+        return attributed.string
     }
 
     private func parseDate(_ string: String) -> Date? {

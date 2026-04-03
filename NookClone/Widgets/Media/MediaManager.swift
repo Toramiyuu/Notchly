@@ -241,7 +241,7 @@ class MediaManager: ObservableObject {
         case nil:       return
         }
         let src = "tell application \"\(appName)\" to \(command)"
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.main.async {
             NSAppleScript(source: src)?.executeAndReturnError(nil)
         }
     }

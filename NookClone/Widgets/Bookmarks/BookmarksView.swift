@@ -75,8 +75,7 @@ private struct BookmarkButton: View {
         .buttonStyle(.plain)
         .onHover { isHovered = $0 }
         .onAppear {
-            DispatchQueue.global(qos: .utility).async {
-                let img = item.favicon
+            item.fetchFavicon { img in
                 DispatchQueue.main.async { favicon = img }
             }
         }

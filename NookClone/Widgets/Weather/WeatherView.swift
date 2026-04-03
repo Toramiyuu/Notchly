@@ -92,12 +92,29 @@ struct WeatherView: View {
     }
 
     private func errorView(_ message: String) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: "exclamationmark.triangle")
-                .foregroundStyle(.yellow.opacity(0.7))
-            Text(message)
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.5))
+        let isLocationError = message.lowercased().contains("location") ||
+                              message.lowercased().contains("denied")
+        return VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 8) {
+                Image(systemName: "exclamationmark.triangle")
+                    .foregroundStyle(.yellow.opacity(0.7))
+                Text(message)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.5))
+            }
+            if isLocationError {
+                Button {
+                    NSWorkspace.shared.open(
+                        URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices")!
+                    )
+                } label: {
+                    Text("Open Location Settings →")
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.4))
+                        .underline()
+                }
+                .buttonStyle(.plain)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 8)
