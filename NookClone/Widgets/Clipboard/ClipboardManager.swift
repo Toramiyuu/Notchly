@@ -111,13 +111,16 @@ class ClipboardManager: ObservableObject {
             DispatchQueue.main.async { self.addItem(ClipboardItem(text: text)) }
         } else if let images = NSPasteboard.general.readObjects(forClasses: [NSImage.self]) as? [NSImage],
                   let first = images.first,
-                  let tiff = first.tiffRepresentation,
-                  let bitmap = NSBitmapImageRep(data: tiff),
-                  let png = bitmap.representation(using: .png, properties: [:]) {
-            let filename = UUID().uuidString + ".png"
-            let fileURL = Self.imagesDir.appendingPathComponent(filename)
-            try? png.write(to: fileURL, options: .atomic)
-            DispatchQueue.main.async { self.addItem(ClipboardItem(imageFilename: filename)) }
+                  let tiff = first.tiffRepresentation {
+            // PNG conversion and disk write moved off the main thread
+            DispatchQueue.global(qos: .utility).async {
+                guard let bitmap = NSBitmapImageRep(data: tiff),
+                      let png = bitmap.representation(using: .png, properties: [:]) else { return }
+                let filename = UUID().uuidString + ".png"
+                let fileURL = Self.imagesDir.appendingPathComponent(filename)
+                try? png.write(to: fileURL, options: .atomic)
+                DispatchQueue.main.async { self.addItem(ClipboardItem(imageFilename: filename)) }
+            }
         }
     }
 

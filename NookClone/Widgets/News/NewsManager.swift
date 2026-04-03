@@ -142,18 +142,35 @@ class NewsManager: NSObject, ObservableObject, XMLParserDelegate {
         DispatchQueue.main.async { self.items = result }
     }
 
-    /// Decodes HTML entities like &amp; &quot; &#39; &lt; &gt;
+    /// Decodes common HTML entities found in RSS feed titles.
+    /// Thread-safe — does not use NSAttributedString HTML parsing.
     private func decodeHTMLEntities(_ string: String) -> String {
         guard string.contains("&") else { return string }
-        // Use NSAttributedString's HTML parser — handles all named and numeric entities
-        guard let data = string.data(using: .utf8),
-              let attributed = try? NSAttributedString(
-                data: data,
-                options: [.documentType: NSAttributedString.DocumentType.html,
-                          .characterEncoding: NSUTF8StringEncoding],
-                documentAttributes: nil
-              ) else { return string }
-        return attributed.string
+        var result = string
+        let named: [(String, String)] = [
+            ("&amp;", "&"), ("&lt;", "<"), ("&gt;", ">"),
+            ("&quot;", "\""), ("&apos;", "'"), ("&#39;", "'"),
+            ("&nbsp;", " "), ("&#160;", " "), ("&mdash;", "—"),
+            ("&ndash;", "–"), ("&lsquo;", "'"), ("&rsquo;", "'"),
+            ("&ldquo;", "\u{201C}"), ("&rdquo;", "\u{201D}"),
+        ]
+        for (entity, char) in named {
+            result = result.replacingOccurrences(of: entity, with: char)
+        }
+        // Numeric decimal entities &#NNN;
+        let pattern = "&#(\\d+);"
+        if let regex = try? NSRegularExpression(pattern: pattern) {
+            let matches = regex.matches(in: result, range: NSRange(result.startIndex..., in: result))
+            for match in matches.reversed() {
+                if let range = Range(match.range(at: 1), in: result),
+                   let codePoint = UInt32(result[range]),
+                   let scalar = Unicode.Scalar(codePoint) {
+                    let entity = String(result[Range(match.range, in: result)!])
+                    result = result.replacingOccurrences(of: entity, with: String(Character(scalar)))
+                }
+            }
+        }
+        return result
     }
 
     private func parseDate(_ string: String) -> Date? {
