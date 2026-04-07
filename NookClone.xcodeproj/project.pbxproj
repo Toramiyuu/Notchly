@@ -22,6 +22,7 @@
 		28EF5432B7AB801D583D1444 /* CalendarWidgetSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF290A316AAA27D5DD069EFF /* CalendarWidgetSettingsView.swift */; };
 		38F79C55A23DD32AA7D9D89F /* AlbumCoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EE23A449841F1E501AEF9E /* AlbumCoverView.swift */; };
 		438E11829A20EAF4D0294EFA /* NookPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0BF1A1F3B0E9475112DEF29 /* NookPanelView.swift */; };
+		BB11CC22DD33EE44FF550011 /* PanelSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB11CC22DD33EE44FF550022 /* PanelSettingsView.swift */; };
 		453B377E396E4156C7BD579F /* TodoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1EB12295368D06B13B9CB16 /* TodoView.swift */; };
 		456EF9ED93659A52F5121E58 /* WidgetContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D8DDC8AF294856FF96E7EBE /* WidgetContainerView.swift */; };
 		4B43600913CD1C2D14F7E115 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4783DDAEA0339ACB269F02A1 /* BluetoothManager.swift */; };
@@ -122,6 +123,7 @@
 		A61613C4EE40D37759E2DA31 /* MediaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaManager.swift; sourceTree = "<group>"; };
 		A639844A333E63A376CD4EB8 /* NotchFineTuneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotchFineTuneView.swift; sourceTree = "<group>"; };
 		B0BF1A1F3B0E9475112DEF29 /* NookPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NookPanelView.swift; sourceTree = "<group>"; };
+		BB11CC22DD33EE44FF550022 /* PanelSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSettingsView.swift; sourceTree = "<group>"; };
 		B1EB12295368D06B13B9CB16 /* TodoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoView.swift; sourceTree = "<group>"; };
 		B2C05250E749A5561D6034C7 /* ClipboardHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardHistoryView.swift; sourceTree = "<group>"; };
 		B6A749A121B5ADA77DB1210E /* MirrorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorManager.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 			isa = PBXGroup;
 			children = (
 				B0BF1A1F3B0E9475112DEF29 /* NookPanelView.swift */,
+				BB11CC22DD33EE44FF550022 /* PanelSettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -500,6 +503,7 @@
 				6E11313DB1979571DE676148 /* MirrorSettingsView.swift in Sources */,
 				BD2CBEB2734DC58BAF6A7F3B /* MirrorView.swift in Sources */,
 				438E11829A20EAF4D0294EFA /* NookPanelView.swift in Sources */,
+				BB11CC22DD33EE44FF550011 /* PanelSettingsView.swift in Sources */,
 				098EB21BE019479A800EBCCD /* NotchFineTuneView.swift in Sources */,
 				712F761AA5EF43E11AF5C402 /* NotchScreenDetector.swift in Sources */,
 				98F245677DDFD3D4CB618276 /* NotchWindowController.swift in Sources */,

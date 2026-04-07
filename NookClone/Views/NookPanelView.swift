@@ -7,6 +7,9 @@ struct NookPanelView: View {
     @State private var isPillHovered = false
     @State private var hudInfo: HUDEvent? = nil
     @State private var hudDismissTask: DispatchWorkItem? = nil
+    @State private var isPanelSettingsMode = false
+    @State private var isGearHovered = false
+    @State private var lastWidgetHeight: CGFloat = 200
     @ObservedObject private var media = MediaManager.shared
 
     private var showLiveNotch: Bool { media.currentTrack != nil && !isExpanded }
@@ -35,11 +38,29 @@ struct NookPanelView: View {
                         }
 
                     if isExpanded {
-                        WidgetContainerView()
+                        ZStack(alignment: .topTrailing) {
+                            Group {
+                                if isPanelSettingsMode {
+                                    PanelSettingsView()
+                                        .transition(.asymmetric(
+                                            insertion: .move(edge: .trailing).combined(with: .opacity),
+                                            removal:   .move(edge: .trailing).combined(with: .opacity)
+                                        ))
+                                } else {
+                                    WidgetContainerView()
+                                        .transition(.asymmetric(
+                                            insertion: .move(edge: .leading).combined(with: .opacity),
+                                            removal:   .move(edge: .leading).combined(with: .opacity)
+                                        ))
+                                }
+                            }
                             .padding(.horizontal, 14)
                             .padding(.top, 10)
                             .padding(.bottom, 14)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
+
+                            settingsGearButton
+                        }
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                 }
                 .background(isExpanded ? .black : .clear)
@@ -61,7 +82,12 @@ struct NookPanelView: View {
         .onReceive(NotificationCenter.default.publisher(for: .notchPanelExpandedChanged)) { note in
             if let expanded = note.object as? Bool {
                 isExpanded = expanded
+                if !expanded { isPanelSettingsMode = false }
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .notchPanelHeightChanged)) { note in
+            // Track the last widget-driven height so we can restore it when closing settings
+            if let h = note.object as? CGFloat, !isPanelSettingsMode { lastWidgetHeight = h }
         }
         .onReceive(NotificationCenter.default.publisher(for: .notchPillHoverChanged)) { note in
             withAnimation(.easeInOut(duration: 0.15)) {
@@ -172,6 +198,32 @@ struct NookPanelView: View {
             .frame(height: 4)
         }
         .padding(.horizontal, 14)
+    }
+
+    // MARK: - Settings gear
+
+    private var settingsGearButton: some View {
+        Button {
+            let entering = !isPanelSettingsMode
+            withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                isPanelSettingsMode = entering
+            }
+            NotificationCenter.default.post(
+                name: .notchPanelHeightChanged,
+                object: entering ? CGFloat(260) : lastWidgetHeight
+            )
+        } label: {
+            Image(systemName: isPanelSettingsMode ? "xmark" : "gearshape")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(.white.opacity(isGearHovered ? 0.7 : (isPanelSettingsMode ? 0.5 : 0.3)))
+                .frame(width: 28, height: 28)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { isGearHovered = $0 }
+        .padding(.top, 4)
+        .padding(.trailing, 4)
+        .animation(.easeInOut(duration: 0.15), value: isGearHovered)
     }
 
     @ViewBuilder
