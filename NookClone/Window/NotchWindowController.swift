@@ -189,6 +189,7 @@ class NotchWindowController: NSWindowController {
         isExpanded = true
         window?.hasShadow = true
         window?.ignoresMouseEvents = false
+        window?.orderFront(nil)
         window?.makeKey()
         computeFrames(widgetHeight: currentWidgetHeight)
         NotificationCenter.default.post(name: .notchPanelExpandedChanged, object: true)

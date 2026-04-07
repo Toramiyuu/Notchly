@@ -47,41 +47,21 @@ class FullscreenMonitor {
         onChange(isFullscreen)
     }
 
-    /// Detects true macOS fullscreen (the kind that hides the menu bar and notch).
+    /// Detects true macOS fullscreen — the kind that hides the menu bar.
     ///
-    /// On macOS 15+, `AXFullScreen` alone is unreliable — it returns `true` for
-    /// maximized and tiled windows that still show the menu bar.  We use the
-    /// window-list CGS API to check whether a window on the active space has the
-    /// `.fullScreenWindow` style mask, which is only set for genuine fullscreen.
+    /// The previous CGWindowList size-check caused false positives: Chrome, Teams,
+    /// Word and other apps create backing/render windows whose reported bounds equal
+    /// the screen dimensions, even though the menu bar is still visible.  Those apps
+    /// were incorrectly triggering `orderOut`, making Notchly invisible whenever the
+    /// user switched away from the desktop.
+    ///
+    /// The reliable signal is simpler: true fullscreen hides the menu bar, which
+    /// macOS reflects immediately in `NSScreen.visibleFrame`.  In normal mode the
+    /// menu bar occupies ~24–37 pt at the top of the screen, so
+    /// `screen.frame.maxY - screen.visibleFrame.maxY` is ≥ 20.  When the menu bar
+    /// is hidden that gap collapses to < 5.
     private func isFrontmostAppFullscreen() -> Bool {
-        guard let frontApp = NSWorkspace.shared.frontmostApplication else { return false }
-
-        // CGWindowListCopyWindowInfo is the most reliable way to detect true
-        // fullscreen windows on modern macOS — it reports the actual window
-        // backing-store level, which only goes to kCGFullScreenWindow for the
-        // real fullscreen mode (not maximized/tiled).
-        let pid = frontApp.processIdentifier
-        guard pid > 0,
-              let windowList = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[CFString: Any]] else {
-            return false
-        }
-
-        let screenFrame = NSScreen.screens.first?.frame ?? .zero
-
-        for info in windowList {
-            guard let ownerPID = info[kCGWindowOwnerPID] as? Int32, ownerPID == pid else { continue }
-            guard let bounds = info[kCGWindowBounds] as? [String: CGFloat] else { continue }
-
-            let w = bounds["Width"] ?? 0
-            let h = bounds["Height"] ?? 0
-
-            // A true fullscreen window covers the entire screen including the
-            // menu bar / notch area.  Allow 1pt tolerance for rounding.
-            if abs(w - screenFrame.width) < 2 && abs(h - screenFrame.height) < 2 {
-                return true
-            }
-        }
-
-        return false
+        guard let screen = NSScreen.main else { return false }
+        return screen.frame.maxY - screen.visibleFrame.maxY < 5
     }
 }
